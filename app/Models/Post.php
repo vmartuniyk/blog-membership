@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Post extends Model
 {
@@ -14,4 +15,8 @@ class Post extends Model
       'body',
       'active'
     ];
+    public function scopeActive(Builder $query):void
+    {
+        $query->where('active',1);
+    }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\EditPostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
 
 
 class PostController extends Controller
@@ -19,15 +22,6 @@ class PostController extends Controller
         return response(PostResource::collection(Post::active()->get()));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,9 +29,11 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreatePostRequest $request):JsonResponse
     {
-        //
+        $post = Post::create($request->validated());
+
+        return response()->json(PostResource::make($post));
     }
 
     /**
@@ -46,21 +42,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id):JsonResponse
     {
-        //
+        $post = Post::find($id);
+
+        return response()->json(PostResource::make($post));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -69,9 +57,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditPostRequest $request, $id): JsonResponse
     {
-        //
+        $post = Post::find($id);
+
+        $data = $request->validated();
+
+        $post->update($data);
+
+        return response()->json(PostResource::make($post));
     }
 
     /**
@@ -80,8 +74,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id):JsonResponse
     {
-        //
+        Post::destroy($id);
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

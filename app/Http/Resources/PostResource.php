@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'body' => $this->body,
-            'active' => $this->active
+            'active' => (bool)$this->active
         ];
     }
 }
